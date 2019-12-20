@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication'
 ]
 
 # Third party APIs and Apps
@@ -137,7 +138,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_SESSION_LOGIN = True
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = False
 # ACCOUNT_LOGOUT_ON_GET = False
@@ -160,3 +161,7 @@ REST_FRAMEWORK = {
 }
 
 ACCOUNT_LOGOUT_ON_GET = True
+
+
+# Custom user model
+AUTH_USER_MODEL = 'authentication.User'
