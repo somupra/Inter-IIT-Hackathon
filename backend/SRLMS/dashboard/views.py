@@ -9,7 +9,7 @@ from django.http import Http404
 import os
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import authentication
 from rest_framework.exceptions import APIException
 from itertools import chain
@@ -21,7 +21,8 @@ class PostCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def upvote(request):
     user = request.user
     post_id = request.data.get('id')
