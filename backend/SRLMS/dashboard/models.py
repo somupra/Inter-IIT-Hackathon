@@ -14,7 +14,7 @@ class Post(models.Model):
     is_resolved = models.BooleanField(default=False)
     x_coordinate = models.FloatField(null=False, blank=False)
     y_coordinate = models.FloatField(null=False, blank=False)
-
+    token = models.CharField(max_length=6, null=False, default='ABCDEF')
 
     def __str__(self):
         return '{} Post'.format(self.author)
