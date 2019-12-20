@@ -5,7 +5,7 @@ services:
     build: ./SRLMS
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./app/:/usr/src/app/
+      - ./SRLMS:/usr/src/app/
     ports:
       - 8000:8000
     env_file:
@@ -16,6 +16,8 @@ services:
     image: postgres:12.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_USER=dbadmin
       - POSTGRES_PASSWORD=srlmsdb
