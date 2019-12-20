@@ -3,5 +3,6 @@ from dashboard import views as db_views
 
 
 urlpatterns = [
-    #posts views here   
+    #posts views here 
+    path('create/', db_views.PostCreate.as_view())  
 ]
