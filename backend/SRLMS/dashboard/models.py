@@ -16,8 +16,9 @@ class Post(models.Model):
     x_coordinate = models.FloatField(null=False, blank=False)
     y_coordinate = models.FloatField(null=False, blank=False)
     token = models.CharField(max_length=6, null=False, default='ABCDEF')
-    official = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_posts')
+    official = models.ManyToManyField(User)
     extended_reports_exists = models.BooleanField(default=False)
+    ignored = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} Post'.format(self.author)

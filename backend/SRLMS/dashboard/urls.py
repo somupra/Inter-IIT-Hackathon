@@ -9,8 +9,6 @@ urlpatterns = [
     path('downvote/', db_views.downvote),
     path('upvote/', db_views.upvote),
     path('downvote/', db_views.downvote),
-    path('adminfeed-progress/', db_views.AdminListProgress.as_view()),
-    path('adminfeed-complaint/', db_views.AdminListComplaint.as_view()),
     path('upvoted-posts/', db_views.UpvotedPostsView.as_view()),
     path('downvoted-posts/', db_views.DownvotedPostsView.as_view()),
     path('personal-posts/', db_views.PersonalPosts.as_view()), 

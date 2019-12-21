@@ -35,29 +35,6 @@ class PostCreate(generics.CreateAPIView):
                 nearest_marker = marker
         return serializer.save(author=user, token=token, official=nearest_marker.location.official)
 
-class AdminListProgress(generics.GenericAPIView):
-    serializer_class = PostSerializer
-    queryset = Post.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-    def get(self, request, format = None):
-        if not self.request.user.is_staff:
-            return Response({'message': 'You do not have rights to access this page'}, status=status.HTTP_403_FORBIDDEN)
-        
-        posts = Post.objects.filter(official=self.request.user, progress_report=True)
-        posts_list = PostSerializer(posts, many=True)  
-        return Response(posts_list.data)
-
-class AdminListComplaint(generics.GenericAPIView):
-    serializer_class = PostSerializer
-    queryset = Post.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-    def get(self, request, format = None):
-        if not self.request.user.is_staff:
-            return Response({'message': 'You do not have rights to access this page'}, status=status.HTTP_403_FORBIDDEN)
-        
-        posts = Post.objects.filter(official=self.request.user, progress_report=False)
-        posts_list = PostSerializer(posts, many=True)  
-        return Response(posts_list.data)
 
 
 @api_view(['POST'])
