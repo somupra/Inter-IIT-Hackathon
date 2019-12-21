@@ -33,8 +33,13 @@ One of the major problem can be of spamming the portal with wrong posts. To tack
 ### Departments
 To ensure that complaints are processed faster, we have setup departments on the admin side. The admin can assign tasks to officials that is for different road construction and maintenance. Alongwith tasks, the admin marks the locations of roads on map. Now whenever a new task is created, it's closest marker is then identified and the official associated with the task then can see the post.
 
-### Incentives
-To promote the correct use of app, we have designed a structure to give inctentives to authors for valuable inputs they give. For every report that is resolved (is obviously verified to be true) , the author is given some points. These points can then later be redeemed at places like paying toll taxes.
+## Incentives:
+To promote the correct use of app, we have designed a structure to give incentives to authors for valuable inputs they give, these are the incentives which will incentivize common mass to act as active agents in the cause:
+### Reward points:
+Each report an user makes will follow some reward points if the report is found legit and is accepted by the officials assigned for the location, thus, people will make more reports to gain more and more rewards which gamifies the app. These reward points can be accessed at Toll taxes and other govt. facilities.
+
+### Walk and earn:
+Our app has a _run_ feature embedded in it in which users will get more points if they go to the site keeping this mode on, this basically means that the app will focus on health of the citizens with the crowdsourcing. We use phone acceleratometer sensors to judge if a person is walking or not.
 
 
 
