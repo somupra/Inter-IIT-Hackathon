@@ -1,4 +1,6 @@
 import os
+from django.contrib.messages import constants as messages
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +19,7 @@ DEBUG = True
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
@@ -32,8 +34,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
+    'crispy_forms',
     'dashboard',
-    'admindb'
+    'admindb',
+    'drf_extra_fields',
 ]
 
 # Third party APIs and Apps
@@ -42,7 +46,6 @@ INSTALLED_APPS += [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-    # 'drf_writable_nested',
 
     # Registration
     'django.contrib.sites',
@@ -61,11 +64,21 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 
 ROOT_URLCONF = 'SRLMS.urls'
 
@@ -105,7 +118,7 @@ WSGI_APPLICATION = 'SRLMS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'srlmsdb',
+        'NAME': 'srlmsdb2',
         'USER': 'dbadmin',
         'PASSWORD': 'srlmsdb',
         'HOST': 'localhost',
@@ -194,3 +207,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'client_secrets.json'
+
+LOGIN_REDIRECT_URL= 'dashboard'
+LOGIN_URL = 'login'

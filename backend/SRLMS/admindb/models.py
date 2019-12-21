@@ -13,15 +13,15 @@ class Department(models.Model):
         return '{0}'.format(self.name)
 
 class Location(models.Model):
-    official = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='locations')
+    official = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='locations')
     area = models.FloatField(default=0)
     budget_alloc = models.BigIntegerField(default=10000)
     under_construction = models.BooleanField(default=True)
     def __str__(self):
-        return '{0}: Task'.format(self.official)
+        return '{0}: Location'.format(self.official)
 
 class Marker(models.Model):
-    location = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='markers')
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='markers')
     x = models.FloatField(default=0)
     y = models.FloatField(default=0)
 
