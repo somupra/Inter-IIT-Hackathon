@@ -4,7 +4,7 @@ from rest_framework import views, permissions, generics, mixins, status
 from authentication.models import User
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import authentication
@@ -13,27 +13,42 @@ from itertools import chain
 from admindb.models import Marker
 import random
 import string
+from django.contrib import messages
+import datetime
 
 class PostCreate(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PostSerializer
 
     def perform_create(self, serializer):
-        user = self.request.user
+        auth = self.request.user
         
-        loc_x = serializer.initial_data.get('x_coordinate')
-        loc_y = serializer.initial_data.get('y_coordinate')
-        progress_report = serializer.initial_data.get('progress_report')
-        token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 6))
+        if auth.freeze and auth.freeze_date>datetime.datetime.now().date() and auth.contributions < 2:      #Threshold is the value again set by admin
+            return Response({'message': 'Your account is freezed!'}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            if auth.freeze:
+                auth.contributions = 0
+                auth.freeze = False
+                auth.spamcount = 0
 
-        # take all the markers and map the post to the most relevant one
-        markers = Marker.objects.all()
-        mindiff = 999999999
-        nearest_marker = markers.first()
-        for marker in markers:
-            if abs(loc_x-marker.x) + abs(loc_y-marker.y) < mindiff:
-                nearest_marker = marker
-        return serializer.save(author=user, token=token, official=nearest_marker.location.official)
+            if auth.spamcount > 0 :
+                #Send alert
+                messages.info(self.request, "Alert! Posting more spams can lead to freezing of account")
+
+
+            loc_x = serializer.initial_data.get('x_coordinate')
+            loc_y = serializer.initial_data.get('y_coordinate')
+            progress_report = serializer.initial_data.get('progress_report')
+            token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 6))
+
+            # take all the markers and map the post to the most relevant one
+            markers = Marker.objects.all()
+            mindiff = 999999999
+            nearest_marker = markers.first()
+            for marker in markers:
+                if abs(loc_x-marker.x) + abs(loc_y-marker.y) < mindiff:
+                    nearest_marker = marker
+            return serializer.save(author=auth, token=token, official=nearest_marker.location.official)
 
 class AdminListProgress(generics.GenericAPIView):
     serializer_class = PostSerializer
@@ -74,11 +89,15 @@ def upvote(request):
         post.upvoters.remove(user)
         data['upvoted'] = False
         post.save()
+        user.contributions -= 1
+        user.save()
         return JsonResponse(data)
     
     post.upvotes +=1
     post.upvoters.add(user)
+    user.contributions += 1
     post.save()
+    user.save()
     data['upvoted'] = True
 
     return JsonResponse(data)
@@ -87,7 +106,6 @@ def upvote(request):
 @permission_classes([IsAuthenticated])
 def downvote(request):
     user = request.user
-    print(request)
     post_id = request.data.get('id')
     data = {
         'downvoted': Post.objects.filter(downvoters=user).exists()
@@ -95,19 +113,18 @@ def downvote(request):
     post = Post.objects.get(id=post_id)
     if data['downvoted']:
         post.downvotes += 1
-        post.author.spams -= 1
-        post.author.save()
-        print("yahan")
+        user.contributions -= 1
         post.downvoters.remove(user)
         data['downvoted'] = False
         post.save()
+        user.save()
         return JsonResponse(request.data)
     
     post.downvotes -=1
-    post.author.spams += 1
-    post.author.save()
     post.downvoters.add(user)
+    user.contributions += 1
     post.save()
+    user.save()
     data['downvoted'] = True
     return JsonResponse(request.data)
 
@@ -127,7 +144,7 @@ class FeedPostView(ListAPIView):
             diff_x = abs(coordinate_x - post.x_coordinate)
             diff_y = abs(coordinate_y - post.y_coordinate)
             if diff_x + diff_y < precision and user not in post.upvoters.all() and user not in post.downvoters.all() :
-                post_ids.append(objects.id)
+                post_ids.append(post.id)
         return Post.objects.filter(id__in = post_ids)
 
 class PersonalPosts(ListAPIView):
