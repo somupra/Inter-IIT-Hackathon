@@ -1,31 +1,64 @@
-from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework import views, permissions, generics, mixins, status
 from authentication.models import User
 from rest_framework.response import Response
-from itertools import chain
+from rest_framework.generics import ListAPIView
 from django.http import Http404
-import os
 from django.conf import settings
-from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import authentication
-from rest_framework.exceptions import APIException
+from rest_framework.permissions import IsAuthenticated
 from itertools import chain
+from admindb.models import Marker
+import random
+import string
 
 class PostCreate(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PostSerializer
 
     def perform_create(self, serializer):
-        auth = self.request.user
-        if auth.spams < 6:
-            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 6))
-            print(res)
-            serializer.save(author=auth,token=res)
-        else:
-            messages.info(self.request,'Too many spams to create post')
+        user = self.request.user
+        
+        loc_x = serializer.initial_data.get('x_coordinate')
+        loc_y = serializer.initial_data.get('y_coordinate')
+        progress_report = serializer.initial_data.get('progress_report')
+        token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 6))
+
+        # take all the markers and map the post to the most relevant one
+        markers = Marker.objects.all()
+        mindiff = 999999999
+        nearest_marker = markers.first()
+        for marker in markers:
+            if abs(loc_x-marker.x) + abs(loc_y-marker.y) < mindiff:
+                nearest_marker = marker
+        return serializer.save(author=user, token=token, official=nearest_marker.location.official)
+
+class AdminListProgress(generics.GenericAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, format = None):
+        if not self.request.user.is_staff:
+            return Response({'message': 'You do not have rights to access this page'}, status=status.HTTP_403_FORBIDDEN)
+        
+        posts = Post.objects.filter(official=self.request.user, progress_report=True)
+        posts_list = PostSerializer(posts, many=True)  
+        return Response(posts_list.data)
+
+class AdminListComplaint(generics.GenericAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, format = None):
+        if not self.request.user.is_staff:
+            return Response({'message': 'You do not have rights to access this page'}, status=status.HTTP_403_FORBIDDEN)
+        
+        posts = Post.objects.filter(official=self.request.user, progress_report=False)
+        posts_list = PostSerializer(posts, many=True)  
+        return Response(posts_list.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -50,7 +83,8 @@ def upvote(request):
 
     return JsonResponse(data)
 
-@api_view(['POST',])
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def downvote(request):
     user = request.user
     print(request)
@@ -78,19 +112,45 @@ def downvote(request):
     return JsonResponse(request.data)
 
 class FeedPostView(ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
 
     def get_queryset(self):
         user = self.request.user
-        coordinates = self.request.data.get('coordinates')           # Give x,y,z coordinates from frontend
+        coordinate_x = self.request.data.get('coordinate_x')           # Give x,y coordinates from frontend
+        coordinate_y = self.request.data.get('coordinate_y')
         posts = Post.objects.all()
+        precision = user.precision
         post_ids = list()
-        print(coordinates)
-        # print(coordinates.x)
-        for objects in posts:
-            diff_x = abs(coordinates['x'] - objects.x_coordinate)
-            diff_y = abs(coordinates['y'] - objects.y_coordinate)
-            if diff_x + diff_y < 1000 and user not in objects.upvoters.all() and user not in objects.downvoters.all() :
+
+        for post in posts:
+            diff_x = abs(coordinate_x - post.x_coordinate)
+            diff_y = abs(coordinate_y - post.y_coordinate)
+            if diff_x + diff_y < precision and user not in post.upvoters.all() and user not in post.downvoters.all() :
                 post_ids.append(objects.id)
         return Post.objects.filter(id__in = post_ids)
+
+class PersonalPosts(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        return user.authored_posts.all()
+
+class UpvotedPostsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        return user.upvoted_posts.all()
+
+
+class DownvotedPostsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        return user.downvoted_posts.all()
