@@ -189,3 +189,11 @@ AUTH_USER_MODEL = 'authentication.User'
 SPAM_TOLERANCE_DAYS = 10
 ALERT_LEVEL = 25
 
+STATIC_URL = '/static/'
+
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'client_secrets.json'
