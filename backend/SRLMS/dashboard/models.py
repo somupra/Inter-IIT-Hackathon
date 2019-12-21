@@ -18,11 +18,9 @@ class Post(models.Model):
     token = models.CharField(max_length=6, null=False, default='ABCDEF')
     official = models.ManyToManyField(User)
     extended_reports_exists = models.BooleanField(default=False)
-<<<<<<< HEAD
     ignored = models.BooleanField(default=False)
-=======
     spam = models.BooleanField(default=False)
->>>>>>> origin/hotfix
+    was_travelled = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} Post'.format(self.author)

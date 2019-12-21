@@ -12,8 +12,8 @@ class Department(models.Model):
     def __str__(self):
         return '{0}'.format(self.name)
 
-class Task(models.Model):
-    official = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tasks')
+class Location(models.Model):
+    official = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='locations')
     area = models.FloatField(default=0)
     budget_alloc = models.BigIntegerField(default=10000)
     under_construction = models.BooleanField(default=True)

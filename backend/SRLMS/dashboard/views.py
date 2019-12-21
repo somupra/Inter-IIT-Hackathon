@@ -23,7 +23,7 @@ class PostCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         auth = self.request.user
         
-        if auth.freeze and auth.freeze_date>datetime.datetime.now().date() and auth.contributions < 2:      #Threshold is the value again set by admin
+        if auth.freeze and auth.freeze_date>datetime.datetime.now().date() and auth.contributions < settings.MIN_UNFREEZE_CONTRIB:      #Threshold is the value again set by admin
             return Response({'message': 'Your account is freezed!'}, status=status.HTTP_403_FORBIDDEN)
         else:
             if auth.freeze:
@@ -31,9 +31,9 @@ class PostCreate(generics.CreateAPIView):
                 auth.freeze = False
                 auth.spamcount = 0
 
-            if auth.spamcount > 0 :
+            #if auth.spamcount > 0 :
                 #Send alert
-                messages.info(self.request, "Alert! Posting more spams can lead to freezing of account")
+                # messages.info(self.request, "Alert! Posting more spams can lead to freezing of account")
 
 
             loc_x = serializer.initial_data.get('x_coordinate')

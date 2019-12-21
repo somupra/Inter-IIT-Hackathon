@@ -10,15 +10,11 @@ class User(AbstractUser):
     is_official = models.BooleanField(default=False)
     spamcount = models.IntegerField(default=0)
     precision = models.FloatField(default=0.0001)
-<<<<<<< HEAD
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
-    
-=======
     freeze = models.BooleanField(default=False)
     freeze_date = models.DateField(null=True)
     contributions = models.IntegerField(default=0)
-
->>>>>>> origin/hotfix
+    points = models.IntegerField(default=0)
     def __str__(self):
         name = ""
         if len(self.get_full_name()) == 0:

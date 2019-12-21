@@ -186,6 +186,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 AUTH_USER_MODEL = 'authentication.User'
 
 # Parameters to be set by the admin
+SPAM_THRESHOLD = 4
 SPAM_TOLERANCE_DAYS = 10
 ALERT_LEVEL = 25
-
+MIN_UNFREEZE_CONTRIB = 5
