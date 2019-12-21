@@ -7,11 +7,6 @@ from django.conf import settings
 #     spam_block_days = models.IntegerField(default=10)
 #     alert_level = models.IntegerField(default=20)
 
-class Department(models.Model):
-    name = models.CharField(max_length=100)
-    def __str__(self):
-        return '{0}'.format(self.name)
-
 class Location(models.Model):
     official = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='locations')
     area = models.FloatField(default=0)

@@ -6,7 +6,7 @@ from rest_framework import views, permissions, generics, mixins, status
 from django.http import Http404
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Department
+from authentication.models import Department
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from .permissions import IsOfficial

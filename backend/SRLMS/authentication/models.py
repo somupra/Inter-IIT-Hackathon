@@ -1,10 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from admindb.models import Department
 
 """
 The user model for SRLMS, new attributes may be added later to the model. 
 """
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return '{0}'.format(self.name)
+
 class User(AbstractUser):
     # Some base properties may be added later
     is_official = models.BooleanField(default=False)
