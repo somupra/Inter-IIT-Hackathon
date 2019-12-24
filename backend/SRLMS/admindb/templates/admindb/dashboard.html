@@ -1,0 +1,24 @@
+{% extends "admindb/base.html" %}
+{% block content %}
+    {% for complaint in complaints %}
+        <div class = "row border" style = "padding : 20px">
+            <div class="col-md-5">
+                <a href="#">
+                    <img class="img-fluid rounded mb-3 mb-md-0" src="{{ complaint.image.url }}" alt="">
+                </a>
+            </div>
+            <div class="col-md-7">
+                <h4><a href="https://www.google.com/maps/@{{complaint.x_coordinate}},{{complaint.y_coordinate}},18z" target="_blank">Google Map Location</a></h4>
+                    <p><strong>ID : </strong>{{ complaint.token}}</p>
+                    <p><strong>Filer Name : </strong>{{ complaint.author }}</p>
+                    <p><strong>Date filed : </strong>{{ complaint.date_posted }}</p>
+                    <p><strong>Description : </strong>{{ complaint.description }}</p>
+                    <p><strong>Upvotes : </strong>{{ complaint.upvotes }}</p>
+                    <p><strong>Downvotes : </strong>{{ complaint.downvotes }}</p>
+
+                    <a class="btn btn-primary" href="{% url 'decline' complaint.complaint_id %}">Decline</a>
+            </div>
+        </div>
+        <br/>
+      {% endfor %}
+{% endblock content %}

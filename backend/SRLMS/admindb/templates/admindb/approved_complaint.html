@@ -1,0 +1,22 @@
+{% extends "admindb/base.html" %}
+{% block content %}
+        <div class = "row border" style = "padding : 20px">
+            <div class="col-md-5">
+                <a href="#">
+                    <img class="img-fluid rounded mb-3 mb-md-0" src="{{ complaint.ref_image.url }}" alt="">
+                </a>
+            </div>
+            <div class="col-md-7">
+                <h4><a>Location : {{ complaint.location }}</a></h4>
+                <p><strong>ID : </strong>{{ complaint.complaint_id }}</p>
+                <p><strong>Filer Name : </strong>{{ complaint.filer }}</p>
+                <p><strong>Date filed : </strong>{{ complaint.date_filed }}</p>
+                <p><strong>Description : </strong>{{ complaint.description }}</p>
+                <div>
+                    <p>Credited Reward: {{reward}}</p>
+                </div>
+                <a class="btn btn-primary" href="{% url 'dashboard'%}">Return to dashboard</a>
+            </div>
+        </div>
+        <br/>
+{% endblock content %}

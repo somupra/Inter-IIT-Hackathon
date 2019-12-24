@@ -1,0 +1,21 @@
+{% extends "admindb/base.html" %}
+{% block content %}
+    {% for complaint in complaints %}
+        <div class = "row border" style = "padding : 20px">
+            <div class="col-md-5">
+                <a href="#">
+                    <img class="img-fluid rounded mb-3 mb-md-0" src="{{ complaint.ref_image.url }}" alt="">
+                </a>
+            </div>
+            <div class="col-md-7">
+                <h4><a>Location : {{ complaint.location }}</a></h4>
+                    <p><strong>ID : </strong>{{ complaint.complaint_id }}</p>
+                    <p><strong>Filer Name : </strong>{{ complaint.filer }}</p>
+                    <p><strong>Date filed : </strong>{{ complaint.date_filed }}</p>
+                    <p><strong>Description : </strong>{{ complaint.description }}</p>
+                <a class="btn btn-secondary" href="{% url 'solved-success' complaint.complaint_id %}">Mark Solved</a>
+            </div>
+        </div>
+        <br/>
+      {% endfor %}
+{% endblock content %}
