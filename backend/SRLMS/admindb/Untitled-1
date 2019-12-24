@@ -1,0 +1,15 @@
+
+<li>
+    <a href="{% url 'dashboard'%}">New Complaints</a>
+</li>
+<li>
+    <a href="{% url 'verified-complaints' %}">Complaints in progress</a>
+</li>
+<li>
+    <a href="{% url 'solved-complaints' %}">Solved Complaints</a>
+</li>
+
+
+<a class="btn btn-secondary" href="{% url 'login' complaint.complaint_id %}">Approve, Take Action</a>
+                <a class="btn btn-primary" href="{% url 'login' complaint.complaint_id %}">Decline</a>
+                <a class="btn btn-danger" href="{% url 'login' complaint.complaint_id %}">Mark Spam</a>

@@ -169,7 +169,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_SESSION_LOGIN = True
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = False
 # ACCOUNT_LOGOUT_ON_GET = False
@@ -178,6 +178,14 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 OLD_PASSWORD_FIELD_ENABLED = True
 LOGOUT_ON_PASSWORD_CHANGE = False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'somupra9@gmail.com'
+EMAIL_HOST_PASSWORD = 'ragnarok2019'
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from dashboard.models import Post
 from dashboard.serializers import PostSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework import views, permissions, generics, mixins, status
 from django.http import Http404
 from django.core.mail import send_mail
@@ -42,12 +43,13 @@ def forward(request, pk):
 @login_required
 @officials_only
 def decline(request, pk):
-    complaint = get_object_or_404(Complaint, pk = pk)
-    declinenotif = "Your complaint with ID "+ str(complaint.complaint_id)[:8] + " is declined"
-    Notification.objects.create(user=complaint.filer, notification = declinenotif)
-    complaint.delete()
-    messages.success(request, f'Complaint deleted successfully!')
-    return redirect('dashboard')
+    complaint = get_object_or_404(Post, id = pk)
+    complaint.ignored = True
+    complaint.save()
+    messages.success(request, f'Complaint declined successfully!')
+    return redirect('admindb/dashboard')
+
+##############################################
 
 @login_required
 @officials_only

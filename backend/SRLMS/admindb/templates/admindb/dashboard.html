@@ -8,14 +8,15 @@
                 </a>
             </div>
             <div class="col-md-7">
-                <!-- <h4>Location : {{ complaint. }}</h4> -->
+                <h4><a href="https://www.google.com/maps/@{{complaint.x_coordinate}},{{complaint.y_coordinate}},18z" target="_blank">Google Map Location</a></h4>
                     <p><strong>ID : </strong>{{ complaint.token}}</p>
                     <p><strong>Filer Name : </strong>{{ complaint.author }}</p>
                     <p><strong>Date filed : </strong>{{ complaint.date_posted }}</p>
                     <p><strong>Description : </strong>{{ complaint.description }}</p>
-                <a class="btn btn-secondary" href="{% url 'verify' complaint.complaint_id %}">Approve, Take Action</a>
-                <a class="btn btn-primary" href="{% url 'decline' complaint.complaint_id %}">Decline</a>
-                <a class="btn btn-danger" href="{% url 'spam' complaint.complaint_id %}">Mark Spam</a>
+                    <p><strong>Upvotes : </strong>{{ complaint.upvotes }}</p>
+                    <p><strong>Downvotes : </strong>{{ complaint.downvotes }}</p>
+
+                    <a class="btn btn-primary" href="{% url 'decline' complaint.complaint_id %}">Decline</a>
             </div>
         </div>
         <br/>

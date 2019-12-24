@@ -13,7 +13,7 @@ class User(AbstractUser):
     # Some base properties may be added later
     is_official = models.BooleanField(default=False)
     spamcount = models.IntegerField(default=0)
-    precision = models.FloatField(default=0.0001)
+    precision = models.FloatField(default=1000)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     freeze = models.BooleanField(default=False)
     freeze_date = models.DateField(null=True)

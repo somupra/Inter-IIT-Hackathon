@@ -8,7 +8,7 @@ from django.conf import settings
 #     alert_level = models.IntegerField(default=20)
 
 class Location(models.Model):
-    official = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='locations')
+    official = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='locations')
     area = models.FloatField(default=0)
     budget_alloc = models.BigIntegerField(default=10000)
     under_construction = models.BooleanField(default=True)
